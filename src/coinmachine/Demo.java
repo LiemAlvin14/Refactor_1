@@ -10,6 +10,27 @@ public class Demo {
 	// create a java.util.Scanner object for use in all methods
 	private static Scanner console = new Scanner( System.in );
 	
+	//sebelum di-refactor fungsi ini tergabung dalam insertDialog()
+	private CoinMachine insertCoins (CoinMachine machine) {
+		System.out.print("Values of coins to insert: ");
+		String reply = console.nextLine().trim();
+		if ( reply.isEmpty() ) break;
+		// split the line into tokens and insert values
+		String [] words = reply.split("\\s+");
+		for(String word : words ) {
+			int value = Integer.parseInt(word);
+			if ( value <= 0 ) System.out.println("can't insert negative value");
+			else {
+				Coin coin = new Coin(value);
+				if ( machine.insert( coin ) ) {
+					System.out.println(coin+" inserted");
+				} else {
+					System.out.println("Insert "+coin+" FAILED.");
+				}
+			}
+		}
+		return machine;
+	}
 	
 	/** run the user interface */
 	public void insertDialog(CoinMachine machine) {
@@ -17,25 +38,7 @@ public class Demo {
 		System.out.print("Input the value of coins to insert (separated by space). ");
 		System.out.println("Enter a blank line to quit.");
 		do {
-			System.out.print("Values of coins to insert: ");
-			String reply = console.nextLine().trim();
-			if ( reply.isEmpty() ) break;
-			// split the line into tokens and insert values
-			String [] words = reply.split("\\s+");
-			for(String word : words ) {
-				int value = Integer.parseInt(word);
-				if ( value <= 0 ) System.out.println("can't insert negative value");
-				else {
-					Coin coin = new Coin(value);
-					if ( machine.insert( coin ) ) {
-						System.out.println(coin+" inserted");
-					} else {
-						System.out.println("Insert "+coin+" FAILED.");
-					}
-				}
-			}
-			
-			
+			machine = insertCoins(machine);		
 		} while( ! machine.isFull() );
 		
 		displayMachineStatus( machine );
